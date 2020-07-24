@@ -20,16 +20,11 @@
     (error "Can't toggle window layout when the number of windows isn't two.")))
 
 (defhydra hydra-window (:hint nil)
-  "
-_[_: shrink horizontally          _{_: shrink vertically
-_]_: enlarge horizontally         _}_: enlarge vertically
-"
-
-  ("{" evil-window-decrease-height)
-  ("}" evil-window-increase-height)
-  ("[" evil-window-decrease-width)
-  ("]" evil-window-increase-width)
-  ("q" nil "cancel"))
+  ("{" evil-window-decrease-height "Decrease height" :column "Height")
+  ("}" evil-window-increase-height "Increase height")
+  ("[" evil-window-decrease-width "Decrease width" :column "Width")
+  ("]" evil-window-increase-width "Increase width")
+  ("q" nil "cancel" :column "Meta"))
 
 (map! :leader
       (:prefix "w"

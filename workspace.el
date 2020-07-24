@@ -12,11 +12,11 @@
 
     (defhydra hydra-workspace (:hint nil :color blue)
       "
-^^--------------------------------   ^^--------------------------------  ^^--------------------------------
-_<tab>_: Switch to last workspace    _._: Switch workspace               _n_: New workspace
-_l_:     Load workspace from file    _s_: Save workspace to file         _r_: Rename workspace
-_d_:     Delete this workspace       _x_: Delete session                 _R_: Restore last session
-_0_:     Switch to final workspace   _[_: Previous workspace             _]_: Next workspace
+ ^^--------------------------------  ^^--------------------------------  ^^--------------------------------
+ _<tab>_: Switch to last workspace   _._: Switch workspace               _n_: New workspace
+ _l_:     Load workspace from file   _s_: Save workspace to file         _r_: Rename workspace
+ _d_:     Delete this workspace      _x_: Delete session                 _R_: Restore last session
+ _0_:     Switch to final workspace  _[_: Previous workspace             _]_: Next workspace
 
 %s(+workspace--tabline)
 "
