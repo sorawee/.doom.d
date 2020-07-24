@@ -51,6 +51,14 @@
 (map! (:when (featurep! :completion ivy)
        (:after ivy
         :map ivy-minibuffer-map
+        (:prefix ","
+         :desc "Hydra" :n "," #'hydra-ivy/body
+         :desc "Insert" :n "p" #'ivy-insert-current
+         :desc "Insert full" :n "P" #'ivy-insert-current-full
+         :desc "Dispatch done" :n "o" #'ivy-dispatching-done
+         :desc "Dispatch call" :n "O" #'ivy-dispatching-call
+         :desc "Done" :n "m" #'ivy-done
+         :desc "Call" :n "M" #'ivy-call)
         "s-<return>" #'ivy-toggle
         "C-d" #'ivy-scroll-up-command
         "C-u" #'ivy-scroll-down-command)))

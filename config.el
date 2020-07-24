@@ -81,7 +81,9 @@
        ;; we always want C-g to be preserved for keyboard-quit
        evil-want-C-g-bindings nil
        ;; when we exit the insertion mode, we don't want the caret to move back
-       evil-move-cursor-back nil)
+       evil-move-cursor-back nil
+       ;; use evil in minibuffer
+       evil-want-minibuffer t)
 
 (setq! visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 (global-visual-line-mode t)
