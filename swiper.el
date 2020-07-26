@@ -29,7 +29,7 @@
   (ivy-configure #'counsel-yank-pop
     :format-fn #'my/counsel--yank-pop-format-function))
 
-(defun ivy-toggle ()
+(defun my/ivy-toggle ()
   "Mark or unmark the selected candidate."
   (interactive)
   (if (ivy--marked-p)
@@ -52,13 +52,14 @@
        (:after ivy
         :map ivy-minibuffer-map
         (:prefix ","
-         :desc "Hydra" :n "," #'hydra-ivy/body
-         :desc "Insert" :n "p" #'ivy-insert-current
-         :desc "Insert full" :n "P" #'ivy-insert-current-full
-         :desc "Dispatch done" :n "o" #'ivy-dispatching-done
-         :desc "Dispatch call" :n "O" #'ivy-dispatching-call
-         :desc "Done" :n "m" #'ivy-done
-         :desc "Call" :n "M" #'ivy-call)
-        "s-<return>" #'ivy-toggle
-        "C-d" #'ivy-scroll-up-command
-        "C-u" #'ivy-scroll-down-command)))
+         :desc "Hydra" :nm "," #'hydra-ivy/body
+         :desc "Insert" :nm "p" #'ivy-insert-current
+         :desc "Insert full" :nm "P" #'ivy-insert-current-full
+         :desc "Dispatch done" :nm "o" #'ivy-dispatching-done
+         :desc "Dispatch call" :nm "O" #'ivy-dispatching-call
+         :desc "Done" :nm "m" #'ivy-done
+         :desc "Call" :nm "M" #'ivy-call)
+        "s-<return>" #'my/ivy-toggle
+        :nm "<return>" #'ivy-done
+        :ginm "C-d" #'ivy-scroll-up-command
+        :ginm "C-u" #'ivy-scroll-down-command)))

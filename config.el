@@ -118,34 +118,34 @@
       :i "C-d" nil
       :i "C-u" nil
       ;; shortcut for recording + using macros
-      :nim "s-q" "qz"
-      :nim "s-w" "@z"
+      :inm "s-q" "qz"
+      :inm "s-w" "@z"
       :v "RET" #'evil-multiedit-toggle-or-restrict-region
       :v "s" #'evil-surround-region
       ;; up and down arrow are still bound to evil-{next, previous}-line
-      :m "j" #'evil-next-visual-line
-      :m "k" #'evil-previous-visual-line
+      :nm "j" #'evil-next-visual-line
+      :nm "k" #'evil-previous-visual-line
       :vn "<tab>" #'indent-for-tab-command
-      :m "/" #'counsel-grep-or-swiper
+      :nm "/" #'counsel-grep-or-swiper
       :i "C-h" #'left-char
       :i "C-j" #'next-line
       :i "C-k" #'previous-line
       :i "C-l" #'right-char
       :nm "[w" #'previous-multiframe-window
       :nm "]w" #'next-multiframe-window
-      :m "[W" #'+workspace/switch-left
-      :m "]W" #'+workspace/switch-right
+      :nm "[W" #'+workspace/switch-left
+      :nm "]W" #'+workspace/switch-right
       ;; replaced by j
-      :m "gj" nil
+      :nm "gj" nil
       ;; replaced by k
-      :m "gk" nil
-      :mi "C-?" #'undo-fu-only-redo
-      :n "gt" nil
-      :n "gT" nil
+      :nm "gk" nil
+      :inm "C-?" #'undo-fu-only-redo
+      :nm "gt" nil
+      :nm "gT" nil
       ;; replaced by s-/
-      :nv "gc" nil
+      :nmv "gc" nil
       ;; replaced by C-?
-      :n "C-r" nil)
+      :nm "C-r" nil)
 
 (map! :leader
       :desc "Search project" "/" #'+default/search-project ;; override nothing
@@ -190,10 +190,6 @@
 
 (define-and-bind-text-object "$" "\\$" "\\$") ;; for LaTeX
 
-;; Free up s for substitute
-(after! evil-snipe
-  (evil-snipe-mode -1))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Pyret
@@ -201,7 +197,7 @@
   :load-path "~/git/pyret-lang/tools/emacs"
   :mode ("\\.arr\\'" . pyret-mode))
 
-(when (featurep! default +smartparens)
+(when (featurep! :config default +smartparens)
   (after! smartparens
     (show-smartparens-global-mode t)
     (custom-set-faces! `(sp-show-pair-match-face :foreground ,(doom-color 'green)
@@ -235,6 +231,9 @@
         :i "C-j" nil
         :i "C-k" nil)))
 
+;; Free up s for substitute
+(after! evil-snipe
+  (evil-snipe-mode -1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -244,6 +243,7 @@
 (load! "bracket")
 (load! "company")
 (load! "latex")
+(load! "lispy")
 (load! "paste-and-indent")
 (load! "patch")
 (load! "quit")
