@@ -1,14 +1,12 @@
 ;;; ~/.doom.d/racket-mode.el -*- lexical-binding: t; -*-
 
-;; (after! flycheck
-;;   (setq-default flycheck-disabled-checkers (add-to-list 'flycheck-disabled-checkers 'racket)))
+(defun my/racket-repl-clear ()
+  (interactive)
+  (let ((inhibit-read-only t))
+    (erase-buffer)))
 
 (when (featurep! :lang racket)
   (after! racket-mode
-    (remove-hook! racket-mode #'racket-smart-open-bracket-mode)
-
-    ;; don't flood tooltip messages in the message buffer
-    ;; (setq! racket-show-functions '(racket-show-pseudo-tooltip))
     (set-face-attribute 'racket-xp-unused-face nil
                         :strike-through nil
                         :underline '(:color "orange" :style wave))
@@ -18,6 +16,10 @@
           :desc "next bound occurrence" "b" #'racket-xp-next-use
           :desc "previous bound occurrence" "B" #'racket-xp-previous-use
           :desc "documentation" "h" #'racket-xp-documentation)
+
+    (map! :map racket-repl-mode-map
+          :localleader
+          :desc "Clear screen" "k" #'my/racket-repl-clear)
 
     ;; Racket
     (put 'generator 'racket-indent-function 1)

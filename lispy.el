@@ -4,6 +4,23 @@
   (not (or (equal old-point new-point)
            (equal (1+ old-point) new-point))))
 
+;; from https://github.com/noctuid/lispyville/pull/49/files
+(evil-define-motion my/lispyville-forward-atom-end (count)
+  "Go to the next atom or comment end COUNT times."
+  :type inclusive
+  (or count (setq count 1))
+  (forward-char)
+  (if (< count 0)
+      (lispyville-backward-atom-end (- count))
+    (cl-dotimes (_ count)
+      (let ((orig-pos (point)))
+        (forward-symbol 1)
+        (unless (and (ignore-errors (end-of-thing 'lispyville-atom))
+                     (not (<= (point) orig-pos)))
+          (goto-char orig-pos)
+          (cl-return))))
+    (backward-char)))
+
 (evil-define-motion my/lispyville-forward-sexp (count)
   "This is an evil motion equivalent of `forward-sexp'."
   (let ((original-point (point)))
@@ -35,9 +52,17 @@
         (error nil)))))
 
 (after! lispyville
-  (map! :nmv "H" #'my/lispyville-backward-sexp
-        :nmv "L" #'my/lispyville-forward-sexp
-        :nmv "U" #'lispyville-backward-up-list)
+  (lispy-set-key-theme '(lispy c-digits))
+  (map! (:map lispy-mode-map
+         :nmv "H" #'my/lispyville-backward-sexp
+         :nmv "L" #'my/lispyville-forward-sexp
+         :nmv "E" #'my/lispyville-forward-atom-end
+         :nmv "U" #'lispyville-backward-up-list)
+        (:map lispy-mode-map-lispy
+         "[" nil
+         "]" nil
+         "}" nil
+         ":" nil))
   (lispyville-set-key-theme
    '((operators normal)
      (prettify insert)

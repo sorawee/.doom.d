@@ -72,7 +72,9 @@
        ;; when we exit the insertion mode, we don't want the caret to move back
        evil-move-cursor-back nil
        ;; use evil in minibuffer
-       evil-want-minibuffer t)
+       evil-want-minibuffer t
+       ;; free up "," for doom-localleader-key
+       +evil-repeat-keys (cons ";" nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -145,7 +147,9 @@
       ;; replaced by s-/
       :nmv "gc" nil
       ;; replaced by C-?
-      :nm "C-r" nil)
+      :nm "C-r" nil
+      ;; replaced by SPC b d
+      :inm "s-k" nil)
 
 (map! :leader
       :desc "Search project" "/" #'+default/search-project ;; override nothing
