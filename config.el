@@ -239,6 +239,29 @@
 (after! evil-snipe
   (evil-snipe-mode -1))
 
+(after! omnisharp
+  ;; Disable eldoc, since it makes navigation sluggish
+  (setq omnisharp-eldoc-support nil)
+
+  ;; We still want to be able to query type information, however.
+  ;; Note that omnisharp-current-type-information shows information using
+  ;; popup-tip which is pretty terrible, so we instead use the variant that
+  ;; prints to the echo area
+  (omnisharp-current-type-information)
+  (defun my/omnisharp-current-type-information ()
+    (interactive)
+    (clear-this-command-keys)
+    (omnisharp--send-command-to-server
+     "typelookup"
+     (omnisharp--get-typelookup-request-object)
+     (lambda (response)
+       (let ((stuff-to-display (cdr (assoc 'Type response))))
+         (omnisharp--message stuff-to-display)))))
+
+  (map! :map omnisharp-mode-map
+        :localleader
+        "d" #'my/omnisharp-current-type-information))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Load files
