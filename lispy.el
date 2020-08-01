@@ -76,13 +76,13 @@
 
 (after! lispyville
   (lispy-set-key-theme '())
-
   (lispyville-set-key-theme
    '((operators normal)
      (prettify insert)
      text-objects
      (atom-movement t)
-     commentary))
-  ;; so... show-smartparens-mode is still great, so we don't want to
-  ;; deactivate smartparens-mode :(
-  (remove-hook 'lispy-mode-hook #'turn-off-smartparens-mode))
+     commentary)))
+
+(after! lispy
+  (remove-hook 'lispy-mode-hook #'turn-off-smartparens-mode)
+  (add-hook 'lispy-mode-hook #'turn-on-smartparens-mode))
