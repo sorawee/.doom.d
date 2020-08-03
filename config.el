@@ -74,7 +74,7 @@
        ;; use evil in minibuffer
        evil-want-minibuffer t
        ;; free up "," for doom-localleader-key
-       +evil-repeat-keys (cons ";" nil))
+       +evil-repeat-keys (cons ";" "?"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
