@@ -74,7 +74,9 @@
        ;; use evil in minibuffer
        evil-want-minibuffer t
        ;; free up "," for doom-localleader-key
-       +evil-repeat-keys (cons ";" "?"))
+       +evil-repeat-keys (cons ";" "?")
+       ;; speed up long line
+       bidi-inhibit-bpa t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -250,13 +252,13 @@
   (omnisharp-current-type-information)
   (defun my/omnisharp-current-type-information ()
     (interactive)
-    (clear-this-command-keys)
     (omnisharp--send-command-to-server
      "typelookup"
      (omnisharp--get-typelookup-request-object)
      (lambda (response)
        (let ((stuff-to-display (cdr (assoc 'Type response))))
-         (omnisharp--message stuff-to-display)))))
+         (let ((minibuffer-message-timeout 10))
+           (minibuffer-message stuff-to-display))))))
 
   (map! :map omnisharp-mode-map
         :localleader
