@@ -33,5 +33,7 @@
     ;; Rosette
     (put 'when/null 'racket-indent-function 1)
 
+    (put 'destruct 'racket-indent-function 1)
+    (put 'destruct* 'racket-indent-function 1)
     (put 'for/all 'racket-indent-function 'racket--indent-for)
     (put 'for*/all 'racket-indent-function 'racket--indent-for)))

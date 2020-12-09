@@ -281,6 +281,7 @@
 (load! "user-map")
 (load! "window")
 (load! "workspace")
+(load! "third-party")
 
 ;; Note:
 ;; brew install fd # for find file
