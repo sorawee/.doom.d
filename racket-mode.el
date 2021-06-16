@@ -30,6 +30,12 @@
     (put 'for*/stream 'racket-indent-function 'racket--indent-for)
     (put 'test-suite 'racket-indent-function 1)
 
+    ;; pae
+    (put 'นิยาม 'racket-indent-function 1)
+    (put 'จับค่า 'racket-indent-function 1)
+    (put 'กรณี 'racket-indent-function 0)
+    (put 'ฟังก์ชัน 'racket-indent-function 1)
+
     ;; Rosette
     (put 'when/null 'racket-indent-function 1)
 
