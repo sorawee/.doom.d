@@ -23,6 +23,7 @@
 
     ;; Racket
     (put 'generator 'racket-indent-function 1)
+    (put 'do 'racket-indent-function 0)
     (put 'place 'racket-indent-function 1)
     (put 'place/context 'racket-indent-function 1)
     (put 'match-define-values 'racket-indent-function 1)
@@ -42,4 +43,9 @@
     (put 'destruct 'racket-indent-function 1)
     (put 'destruct* 'racket-indent-function 1)
     (put 'for/all 'racket-indent-function 'racket--indent-for)
-    (put 'for*/all 'racket-indent-function 'racket--indent-for)))
+    (put 'for*/all 'racket-indent-function 'racket--indent-for)
+
+    ;; misc
+    (put 'match/extract 'racket-indent-function 4)
+
+    ))

@@ -237,6 +237,9 @@
         :i "C-j" nil
         :i "C-k" nil)))
 
+(after! centaur-tabs
+  (centaur-tabs-group-by-projectile-project))
+
 ;; Free up s for substitute
 (after! evil-snipe
   (evil-snipe-mode -1))

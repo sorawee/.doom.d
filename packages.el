@@ -50,3 +50,6 @@
 (package! visual-regexp)
 (package! visual-regexp-steroids)
 (unpin! racket-mode)
+
+(package! tree-sitter)
+(package! tree-sitter-langs)
