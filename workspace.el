@@ -1,6 +1,6 @@
-;;; ~/.doom.d/workspace.el -*- lexical-binding: t; -*-
+;;; workspace.el -*- lexical-binding: t; -*-
 
-(when (featurep! :ui workspaces)
+(when (modulep! :ui workspaces)
   (after! persp-mode
     ;; this call is to make +workspace--tabline available
     (+workspace/display)
@@ -12,9 +12,9 @@
 
     (defhydra hydra-workspace (:hint nil :color blue)
       "
- ^^--------------------------------  ^^--------------------------------  ^^--------------------------------
- _<tab>_: Switch to last workspace   _._: Switch workspace               _n_: New workspace
- _l_:     Load workspace from file   _s_: Save workspace to file         _r_: Rename workspace
+ ^^--------------------------------  ^^--------------------------------  ^^-------------------------------- ^^--------------------------------
+ _<tab>_: Switch to last workspace   _._: Switch workspace               _n_: New workspace                 _{_: Move to the left
+ _l_:     Load workspace from file   _s_: Save workspace to file         _r_: Rename workspace              _}_: Move to the right
  _d_:     Delete this workspace      _x_: Delete session                 _R_: Restore last session
  _0_:     Switch to final workspace  _[_: Previous workspace             _]_: Next workspace
 
@@ -40,7 +40,9 @@
       ("8" +workspace/switch-to-7)
       ("9" +workspace/switch-to-8)
       ("[" +workspace/switch-left :color pink)
-      ("]" +workspace/switch-right :color pink))
+      ("]" +workspace/switch-right :color pink)
+      ("{" +workspace/swap-left :color pink)
+      ("}" +workspace/swap-right :color pink))
 
     (map! :leader
           :desc "workspace" "TAB" #'hydra-workspace/body)))

@@ -1,4 +1,4 @@
-;;; ~/.doom.d/window.el -*- lexical-binding: t; -*-
+;;; window.el -*- lexical-binding: t; -*-
 
 ;; from @bmag
 (defun my/window-layout-toggle ()

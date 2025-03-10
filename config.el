@@ -36,7 +36,7 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type nil)
+(setq display-line-numbers-type t)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -77,6 +77,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; HACK: https://github.com/doomemacs/doomemacs/issues/7532
+(add-hook 'doom-after-init-hook (lambda () (tool-bar-mode 1) (tool-bar-mode 0)))
+
 ;; This setq! block must be the first thing in the configuration so that
 ;; doom-localleader-key is setup properly
 
@@ -100,6 +103,31 @@
        ;; speed up long line
        bidi-inhibit-bpa t)
 
+(map! (:when (modulep! :completion vertico)
+       (:after vertico
+        :map vertico-map
+        "C-d" (cmd! (vertico-scroll-up 1))
+        "C-u" (cmd! (vertico-scroll-down 1))))
+      (:when (modulep! :ui tabs)
+       (:after centaur-tabs
+        :map centaur-tabs-mode-map
+        "s-{" #'centaur-tabs-backward
+        "s-}" #'centaur-tabs-forward
+        "s-[" #'centaur-tabs-backward-group
+        "s-]" #'centaur-tabs-forward-group
+        "s-P" #'centaur-tabs-toggle-groups
+        "C-c C-<left>" nil
+        "C-c C-<right>" nil
+        "C-c C-<up>" nil
+        "C-c C-<down>" nil))
+      (:when (modulep! :lang org)
+       (:after evil-org
+        :map evil-org-mode-map
+        :i "C-l" nil
+        :i "C-h" nil
+        :i "C-j" nil
+        :i "C-k" nil)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Setup hydra so that it can be used in various files
@@ -117,13 +145,15 @@
    (t (format (format " %%%ds: %%%ds " key-width (- -1 doc-width)) key doc))))
 (setq hydra-key-doc-function #'my/hydra-key-doc-function)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Global config
 
 ;; fullscreen on startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+
+;; remove doom-guess-mode-h
+(remove-hook 'after-save-hook #'doom-guess-mode-h)
 
 ;; Word wrap
 (setq! visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
@@ -152,7 +182,7 @@
       :nm "j" #'evil-next-visual-line
       :nm "k" #'evil-previous-visual-line
       :vn "<tab>" #'indent-for-tab-command
-      (:when (featurep! :completion ivy)
+      (:when (modulep! :completion ivy)
         :nm "/" #'counsel-grep-or-swiper)
       :i "C-h" #'left-char
       :i "C-j" #'next-line
@@ -176,14 +206,22 @@
       ;; replaced by SPC b d
       :inm "s-k" nil)
 
+(defun ediff-dotfile-and-template ()
+  "ediff the current `dotfile' with the template"
+  (interactive)
+  (ediff-files
+   "~/.config/doom/init.el"
+   "~/.config/emacs/templates/init.example.el"))
+
 (map! :leader
       :desc "Search project" "/" #'+default/search-project ;; override nothing
       "x" nil ;; replaced by SPC b s
       :desc "Jump to character" "SPC" #'avy-goto-word-or-subword-1
       (:prefix ("d" . "doom")
-       :desc "Config file" "c" (cmd! (find-file "~/.doom.d/config.el"))
-       :desc "Init file" "i" (cmd! (find-file "~/.doom.d/init.el"))
-       :desc "Package file" "p" (cmd! (find-file "~/.doom.d/packages.el")))
+       :desc "Config file" "c" (cmd! (find-file "~/.config/doom/config.el"))
+       :desc "Init file" "i" (cmd! (find-file "~/.config/doom/init.el"))
+       :desc "Diff init file" "d" #'ediff-dotfile-and-template
+       :desc "Package file" "p" (cmd! (find-file "~/.config/doom/packages.el")))
       (:prefix "b"
        "x" nil ;; replaced by SPC b s
        "X" nil ;; replaced by SPC b s
@@ -205,28 +243,9 @@
        ;; replaced by SPC /
        "e" #'evil-multiedit-match-all))
 
-(defmacro define-and-bind-text-object (key start-regex end-regex)
-  "From https://stackoverflow.com/a/22418983/718349"
-  (let ((inner-name (make-symbol "inner-name"))
-        (outer-name (make-symbol "outer-name")))
-    `(progn
-       (evil-define-text-object ,inner-name (count &optional beg end type)
-         (evil-select-paren ,start-regex ,end-regex beg end type count nil))
-       (evil-define-text-object ,outer-name (count &optional beg end type)
-         (evil-select-paren ,start-regex ,end-regex beg end type count t))
-       (define-key evil-inner-text-objects-map ,key (quote ,inner-name))
-       (define-key evil-outer-text-objects-map ,key (quote ,outer-name)))))
-
-(define-and-bind-text-object "$" "\\$" "\\$") ;; for LaTeX
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Pyret
-(use-package! pyret
-  :load-path "~/git/pyret-lang/tools/emacs"
-  :mode ("\\.arr\\'" . pyret-mode))
-
-(when (featurep! :config default +smartparens)
+(when (modulep! :config default +smartparens)
   (after! smartparens
     (show-smartparens-global-mode t)
     (custom-set-faces! `(sp-show-pair-match-face :foreground ,(doom-color 'green)
@@ -234,25 +253,25 @@
                                                  :underline t))))
 
 
-(map! (:when (featurep! :tools magit)
+(map! (:when (modulep! :tools magit)
        (:after magit
         :map with-editor-mode-map
         :localleader
         :m "," #'with-editor-finish
         :m "k" #'with-editor-cancel))
-      (:when (featurep! :ui tabs)
+      (:when (modulep! :ui tabs)
        (:after centaur-tabs
         :map centaur-tabs-mode-map
         "s-{" #'centaur-tabs-backward
         "s-}" #'centaur-tabs-forward
-        "s-[" #'centaur-tabs-backward-group
-        "s-]" #'centaur-tabs-forward-group
+        "s-[" #'centaur-tabs-move-current-tab-to-left
+        "s-]" #'centaur-tabs-move-current-tab-to-right
         "s-P" #'centaur-tabs-toggle-groups
         "C-c C-<left>" nil
         "C-c C-<right>" nil
         "C-c C-<up>" nil
         "C-c C-<down>" nil))
-      (:when (featurep! :lang org)
+      (:when (modulep! :lang org)
        (:after evil-org
         :map evil-org-mode-map
         :i "C-l" nil
@@ -267,47 +286,32 @@
 (after! evil-snipe
   (evil-snipe-mode -1))
 
-(after! omnisharp
-  ;; Disable eldoc, since it makes navigation sluggish
-  (setq omnisharp-eldoc-support nil)
-
-  ;; We still want to be able to query type information, however.
-  ;; Note that omnisharp-current-type-information shows information using
-  ;; popup-tip which is pretty terrible, so we instead use the variant that
-  ;; prints to the echo area
-  (omnisharp-current-type-information)
-  (defun my/omnisharp-current-type-information ()
-    (interactive)
-    (omnisharp--send-command-to-server
-     "typelookup"
-     (omnisharp--get-typelookup-request-object)
-     (lambda (response)
-       (let ((stuff-to-display (cdr (assoc 'Type response))))
-         (let ((minibuffer-message-timeout 10))
-           (minibuffer-message stuff-to-display))))))
-
-  (map! :map omnisharp-mode-map
-        :localleader
-        "d" #'my/omnisharp-current-type-information))
+;; (use-package! copilot
+;;   :hook (prog-mode . copilot-mode)
+;;   :bind (:map copilot-completion-map
+;;               ("<tab>" . 'copilot-accept-completion)
+;;               ("TAB" . 'copilot-accept-completion)
+;;               ("C-TAB" . 'copilot-accept-completion-by-word)
+;;               ("C-<tab>" . 'copilot-accept-completion-by-word)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Load files
 
-(load! "artist-mode")
 (load! "bracket")
-(load! "company")
 (load! "latex")
-(load! "lispy")
-(load! "paste-and-indent")
-(load! "patch")
-(load! "quit")
 (load! "racket-mode")
-(load! "swiper")
-(load! "user-map")
-(load! "window")
 (load! "workspace")
-(load! "third-party")
+(load! "window")
+
+;; (use-package! racket-mode
+;;   :load-path "~/projects/racket-mode"
+;;   :config
+;;   (require 'racket-hash-lang)
+;;   (add-to-list 'auto-mode-alist '("\\.rkt\\'" . racket-hash-lang-mode))
+;;   (add-to-list 'auto-mode-alist '("\\.scrbl\\'" . racket-hash-lang-mode))
+;;   (add-to-list 'auto-mode-alist '("\\.rhm\\'" . racket-hash-lang-mode)))
+
 
 ;; Note:
 ;; brew install fd # for find file
